@@ -1,0 +1,178 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Favorite Recipes</title>
+    <style>
+        /* General Styles */
+        body {
+    font-family: Arial, sans-serif;
+    /* background: url('https://img.freepik.com/premium-photo/hand-professional-chef-tosses-pieces-vegetables-beef-meat-frying-pan-black-background-restaurant-cooking-concept-free-advertising-space_192985-1161.jpg?w=1060') no-repeat center center fixed; 
+     */
+     background-image: url("peach.png");
+    background-size: cover;
+    color: #333;
+    margin: 0;
+    padding: 0;
+}
+
+        .container {
+            max-width: 900px;
+            margin: 30px auto;
+            padding: 20px;
+            background-color: #ffffff;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        h1 {
+            text-align: center;
+            color: #333;
+            margin-bottom: 20px;
+        }
+
+        button {
+            display: block;
+            margin: 0 auto 20px auto;
+            padding: 10px 20px;
+            font-size: 16px;
+            background-color: #007bff;
+            color: #ffffff;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+
+        button:hover {
+            background-color: #0056b3;
+        }
+
+        /* Grid Layout for Cards */
+        #favorites-list {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr); /* 2 columns */
+            gap: 20px; /* Space between cards */
+        }
+
+        .recipe-card {
+            background-color: #ffffff;
+            border: 1px solid #ddd;
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: transform 0.2s, box-shadow 0.2s;
+        }
+
+        .recipe-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 12px rgba(0, 0, 0, 0.2);
+        }
+
+        .recipe-card img {
+            max-width: 100%;
+            height: auto;
+            border-radius: 10px;
+            margin-bottom: 15px;
+        }
+
+        .recipe-card h3 {
+            font-size: 18px;
+            color: #333333;
+            margin-bottom: 15px;
+        }
+
+        .recipe-card button {
+            background-color: #ff6f61;
+            padding: 10px 12px;
+            font-size: 14px;
+            border: none;
+            border-radius: 5px;
+            color: white;
+            margin: 5px 0;
+            cursor: pointer;
+        }
+
+        .recipe-card button:hover {
+            background-color: #e55b4d;
+        }
+
+        .recipe-card button:nth-child(2) {
+            background-color: #6c757d;
+        }
+
+        .recipe-card button:nth-child(2):hover {
+            background-color: #565e64;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>Your Favorite Recipes</h1>
+        <button onclick="window.location.href='index.html'">Back</button>
+        <div id="favorites-list"></div>
+    </div>
+
+    <script>
+        // Load favorite recipes from local storage
+        function loadFavorites() {
+            const favoritesListDiv = document.getElementById('favorites-list');
+            favoritesListDiv.innerHTML = '';
+
+            const favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            if (favorites.length === 0) {
+                favoritesListDiv.innerHTML = '<p style="text-align:center; color:#666;">No favorite recipes found.</p>';
+                return;
+            }
+
+            favorites.forEach(recipeId => {
+                const apiKey = 'a9fffb156669410ca87e41c585f0999a';
+                const url = `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${apiKey}`;
+
+                fetch(url)
+                    .then(response => response.json())
+                    .then(recipe => {
+                        const recipeCard = document.createElement('div');
+                        recipeCard.classList.add('recipe-card');
+
+                        const recipeImage = document.createElement('img');
+                        recipeImage.src = recipe.image;
+                        recipeCard.appendChild(recipeImage);
+
+                        const recipeTitle = document.createElement('h3');
+                        recipeTitle.textContent = recipe.title;
+                        recipeCard.appendChild(recipeTitle);
+
+                        const viewRecipeButton = document.createElement('button');
+                        viewRecipeButton.textContent = 'View Recipe';
+                        viewRecipeButton.addEventListener('click', () => {
+                            window.location.href = `recipe.html?id=${recipe.id}`;
+                        });
+                        recipeCard.appendChild(viewRecipeButton);
+
+                        const removeButton = document.createElement('button');
+                        removeButton.textContent = 'Remove from Favorites';
+                        removeButton.addEventListener('click', () => {
+                            removeFavorite(recipeId);
+                        });
+                        recipeCard.appendChild(removeButton);
+
+                        favoritesListDiv.appendChild(recipeCard);
+                    });
+            });
+        }
+
+        // Remove a recipe from favorites
+        function removeFavorite(recipeId) {
+            let favorites = JSON.parse(localStorage.getItem('favorites')) || [];
+            favorites = favorites.filter(id => id !== recipeId);
+            localStorage.setItem('favorites', JSON.stringify(favorites));
+            loadFavorites(); // Refresh the list
+        }
+
+        // Load favorites when the page is loaded
+        window.onload = loadFavorites;
+    </script>
+</body>
+</html>

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Recipe Details</title>
+  <link rel="stylesheet" href="styles.css" />
+  <style>
+    .container {
+      max-width: 800px;
+      margin: 20px auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 10px;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .recipe-details img {
+      max-width: 100%;
+      border-radius: 5px;
+    }
+    .recipe-details h2,
+    .recipe-details h3 {
+      color: #ff6f61;
+    }
+    .recipe-details ul {
+      list-style: none;
+      padding: 0;
+    }
+    .recipe-details li {
+      margin-bottom: 10px;
+    }
+    #videoContainer {
+      margin-top: 20px;
+    }
+    #videoFrame {
+      width: 100%;
+      height: 315px;
+      border: none;
+    }
+    #videoError {
+      color: red;
+      font-weight: bold;
+      display: none;
+    }
+    #nutritionWidget {
+      margin: 20px 0;
+      padding: 10px;
+      background: #f9f9f9;
+      border-radius: 5px;
+      border: 1px solid #ddd;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <div id="recipeDetails" class="recipe-details"></div>
+    <div id="nutritionWidget"></div>
+    
+    <!-- Video Section -->
+    <div id="videoContainer">
+      <iframe id="videoFrame"></iframe>
+      <p id="videoError">No video found for this recipe.</p>
+    </div>
+    
+    <button onclick="window.location.href='index.html'">Back</button>
+  </div>
+
+  <script>
+    const recipeId = new URLSearchParams(window.location.search).get('id');
+    const spoonacularApiKey = 'a9fffb156669410ca87e41c585f0999a';
+    const youtubeApiKey = 'AIzaSyBuGqzsLlcePxQlbEM-VJ9OE7G76MftEyA';
+
+    async function fetchRecipeDetails() {
+      const url = `https://api.spoonacular.com/recipes/${recipeId}/information?apiKey=${spoonacularApiKey}`;
+
+      try {
+        const response = await fetch(url);
+        const data = await response.json();
+        displayRecipeDetails(data);
+        fetchYouTubeVideo(data.title); // Pass correct title
+        fetchNutrients(recipeId);
+      } catch (error) {
+        console.error('Error fetching recipe details:', error);
+      }
+    }
+
+    function displayRecipeDetails(data) {
+      const recipeDiv = document.getElementById('recipeDetails');
+      recipeDiv.innerHTML = `
+        <h2>${data.title}</h2>
+        <img src="${data.image}" alt="${data.title}">
+        <h3>Ingredients</h3>
+        <ul>
+          ${data.extendedIngredients.map(ing => `<li>${ing.original}</li>`).join('')}
+        </ul>
+        <h3>Instructions</h3>
+        <p>${data.instructions || 'No instructions available.'}</p>
+      `;
+    }
+
+    async function fetchNutrients(recipeId) {
+      const nutritionUrl = `https://api.spoonacular.com/recipes/${recipeId}/nutritionWidget.json?apiKey=${spoonacularApiKey}`;
+      try {
+        const response = await fetch(nutritionUrl);
+        const nutritionData = await response.json();
+        displayNutrients(nutritionData);
+      } catch (error) {
+        console.error('Error fetching nutrient details:', error);
+        document.getElementById('nutritionWidget').innerHTML = `<p>Error loading nutrient details.</p>`;
+      }
+    }
+
+    function displayNutrients(data) {
+      const nutrientHTML = `
+        <h3>Nutrient Details</h3>
+        <ul>
+          ${data.calories ? `<li>Calories: ${data.calories}</li>` : ''}
+          ${data.fat ? `<li>Fat: ${data.fat}</li>` : ''}
+          ${data.carbs ? `<li>Carbohydrates: ${data.carbs}</li>` : ''}
+          ${data.protein ? `<li>Protein: ${data.protein}</li>` : ''}
+          ${data.sugar ? `<li>Sugar: ${data.sugar}</li>` : ''}
+          ${data.sodium ? `<li>Sodium: ${data.sodium}</li>` : ''}
+          ${data.cholesterol ? `<li>Cholesterol: ${data.cholesterol}</li>` : ''}
+        </ul>
+      `;
+      document.getElementById('nutritionWidget').innerHTML = nutrientHTML;
+    }
+
+    async function fetchYouTubeVideo(query) {
+      const youtubeUrl = `https://www.googleapis.com/youtube/v3/search?part=snippet&q=how+to+cook+${encodeURIComponent(query)}&type=video&maxResults=1&key=${youtubeApiKey}`;
+
+      try {
+        const response = await fetch(youtubeUrl);
+        const data = await response.json();
+
+        if (data.items && data.items.length > 0) {
+          const videoId = data.items[0].id.videoId;
+          document.getElementById('videoFrame').src = `https://www.youtube.com/embed/${videoId}`;
+          document.getElementById('videoError').style.display = 'none';
+        } else {
+          document.getElementById('videoFrame').style.display = 'none';
+          document.getElementById('videoError').style.display = 'block';
+        }
+      } catch (error) {
+        console.error('Error fetching YouTube video:', error);
+        document.getElementById('videoFrame').style.display = 'none';
+        document.getElementById('videoError').style.display = 'block';
+      }
+    }
+
+    fetchRecipeDetails();
+  </script>
+</body>
+</html>

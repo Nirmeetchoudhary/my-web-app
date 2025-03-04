@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sign Up Page</title>
+    <style>
+        body {
+            margin: 0;
+            padding: 0;
+            font-family: Arial, sans-serif;
+            /* background: url('https://img.freepik.com/premium-photo/hand-professional-chef-tosses-pieces-vegetables-beef-meat-frying-pan-black-background-restaurant-cooking-concept-free-advertising-space_192985-1161.jpg?w=1060') no-repeat center center fixed; 
+             */
+    
+            background-size: cover;
+            height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        .navbar {
+            width: 100%;
+            background-color: rgba(241, 17, 17, 0.966);
+            overflow: hidden;
+            padding: 10px 1;
+            position: fixed;
+            top: 0;
+            left: 0;
+            z-index: 1000;
+        }
+        .navbar a {
+            float: right;
+            display: block;
+            color: white;
+            text-align: center;
+            padding: 14px 20px;
+            font-size: 21px;
+            text-decoration: none;
+        }
+        .navbar a:hover {
+            background-color: rgba(255, 255, 255, 0.3);
+        }
+        
+        h1 {
+            color: rgb(0, 0, 0);
+            font-size: 400%;
+            font-family: serif;
+        }
+        .left-text {
+            color: rgb(255, 255, 255);
+            text-align: left;
+            width: 80%;
+            margin-left: 0;
+        }
+        .signup-container {
+            width: 400px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.9);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            margin-top: 20px; /* Add margin to separate from content */
+            text-align: center;
+        }
+        .signup-container h2 {
+            margin-bottom: 20px;
+            color: #333;
+        }
+        .signup-container input[type="text"],
+        .signup-container input[type="email"],
+        .signup-container input[type="password"] {
+            width: 100%;
+            padding: 10px;
+            margin: 10px 0;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+        .signup-container button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+        }
+        .signup-container button:hover {
+            background-color: #555;
+        }
+        .social-login {
+            margin: 20px 0;
+        }
+        .social-login button {
+            width: 100%;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            background-color: #333;
+            /* background-color: #dd4b39; */
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            margin-bottom: 10px;
+        }
+        /* .social-login button:hover {
+            background-color: #c23321;
+        }
+        .social-login button.google {
+            background-color: #dd4b39;
+        }
+        .social-login button.google:hover {
+            background-color: #c23321;
+        } */
+    </style>
+</head>
+<body background="C:\Users\KRIPASAGAR CHAUDHARI\Desktop\Nirmeet\website\peach.png">
+    <div class="navbar">
+        <img src="https://i.ibb.co/6DvRKnq/ok.png" height="10%" width="10%" alt="ok" border="0"></a>
+        <a href="about.html">About</a>
+        <a href="#">Contact</a>
+        <a href="#">Service</a>
+        <a href="#">Home</a>
+    </div>
+        <br><br>
+        <h1>Food Recipe Finder</h1>
+        <p font-family="white">Discover your next culinary masterpiece effortlessly with our intuitive food recipe finder web application.</p>
+    
+    <div class="signup-container">
+        <h2>Sign Up</h2>
+        <form>
+            <input type="text" placeholder="Full Name" required>
+            <input type="email" placeholder="Email" required>
+            <input type="password" placeholder="Password" required>
+            <button type="submit">Sign Up</button>
+        </form>
+        <div class="social-login">
+            <button class="google" onclick="redirectToLogin()">Login</button>
+            <!-- Add other social login buttons as needed -->
+        </div>
+    </div>
+    <script>
+        function redirectToLogin() {
+            window.location.href = 'login.html';
+        }
+    </script>
+</body>
+</html>
