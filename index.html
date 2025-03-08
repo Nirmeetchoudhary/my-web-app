@@ -14,11 +14,13 @@
 <body>
     <header>
         <div class="navbar">
-            <img src="https://i.ibb.co/6DvRKnq/ok.png" height="10%" width="10%" alt="ok" border="0"></a>
+            <img src="https://i.ibb.co/6DvRKnq/ok.png" height="10%" width="10%" alt="ok" border="0">
             <a href="about.html">About</a>
             <a href="contact.html">Contact</a>
             <a href="service.html">Service</a>
             <a href="index.html">Home</a>
+            <span id="user-welcome"></span>
+            <button id="logout-btn">Logout</button>
         </div>
     </header>
 
@@ -51,5 +53,21 @@
 
     <!-- Custom JS -->
     <script src="script.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", function () {
+    let loggedInUser = localStorage.getItem("loggedInUser");
+    if (!loggedInUser) {
+        window.location.href = "login.html"; // Redirect to login if no user is logged in
+    } else {
+        document.getElementById("user-welcome").innerText = "Welcome, " + loggedInUser;
+    }
+});
+
+    
+        document.getElementById("logout-btn").addEventListener("click", function() {
+            localStorage.removeItem("loggedInUser");
+            window.location.href = "login.html";
+        });
+    </script>
 </body>
 </html>
